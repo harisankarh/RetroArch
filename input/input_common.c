@@ -16,12 +16,12 @@
 #include "input_common.h"
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 #include "../general.h"
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
 #endif
-
+#include <assert.h>
 #ifdef HAVE_DINPUT
 #undef DIRECTINPUT_VERSION
 #define DIRECTINPUT_VERSION 0x0800
@@ -78,6 +78,9 @@ const rarch_joypad_driver_t *input_joypad_init_first(void)
 
 void input_joypad_poll(const rarch_joypad_driver_t *driver)
 {
+  /* static int i; */
+
+  /* printf("Balaji %s %d\n",driver->ident,i++); */
    if (driver)
       driver->poll();
 }

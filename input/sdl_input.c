@@ -23,39 +23,244 @@
 #include <stdlib.h>
 #include "../libretro.h"
 #include "input_common.h"
+#include <stdio.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h> 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#define BUFSIZE 1024
+#define COUNT 5
+
+/*
+ * error - wrapper for perror
+ */
+static void error(char *msg) {
+  perror(msg);
+  exit(1);
+}
+
+
+static void *start_server(void *ptr);
+
+static Uint8 global[500];
+
+static void start(void)
+{
+  pthread_t thread1, thread2;
+  char *message1 = "5000";
+  char *message2 = "5001";
+  int  iret1, iret2;
+  int iter1;
+
+  /* Create independent threads each of which will execute function */
+
+  iret1 = pthread_create( &thread1, NULL, start_server, (void*) message1);
+  iret2 = pthread_create( &thread2, NULL, start_server, (void*) message2);
+  /* Wait till threads are complete before main continues. Unless we  */
+  /* wait we run the risk of executing an exit which will terminate   */
+  /* the process and all threads before the threads have completed.   */
+  printf("Servers started \n");
+  return;
+}
 
 typedef struct sdl_input
 {
-   const rarch_joypad_driver_t *joypad;
+  const rarch_joypad_driver_t *joypad;
 
-   int mouse_x, mouse_y;
-   int mouse_abs_x, mouse_abs_y;
-   int mouse_l, mouse_r, mouse_m;
+  int mouse_x, mouse_y;
+  int mouse_abs_x, mouse_abs_y;
+  int mouse_l, mouse_r, mouse_m;
 } sdl_input_t;
+
+
+static void *start_server( void *ptr )
+{
+  char *message;
+  message = (char *) ptr;
+  printf("%s \n", message);
+
+  int sockfd; /* socket */
+  int portno; /* port to listen on */
+  int clientlen; /* byte size of client's address */
+  struct sockaddr_in serveraddr; /* server's addr */
+  struct sockaddr_in clientaddr; /* client addr */
+  struct hostent *hostp; /* client host info */
+  char *buf; /* message buf */
+  buf=malloc(sizeof(char)*BUFSIZE);
+  char *hostaddrp; /* dotted decimal host addr string */
+  int optval; /* flag value for setsockopt */
+  int n; /* message byte size */
+
+  portno = atoi(message);
+
+  /* 
+   * socket: create the parent socket 
+   */
+  sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+  if (sockfd < 0) 
+    error("ERROR opening socket");
+
+  /* setsockopt: Handy debugging trick that lets 
+   * us rerun the server immediately after we kill it; 
+   * otherwise we have to wait about 20 secs. 
+   * Eliminates "ERROR on binding: Address already in use" error. 
+   */
+  optval = 1;
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 
+	     (const void *)&optval , sizeof(int));
+
+  /*
+   * build the server's Internet address
+   */
+  bzero((char *) &serveraddr, sizeof(serveraddr));
+  serveraddr.sin_family = AF_INET;
+  serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  serveraddr.sin_port = htons((unsigned short)portno);
+
+  /* 
+   * bind: associate the parent socket with a port 
+   */
+  if (bind(sockfd, (struct sockaddr *) &serveraddr, 
+	   sizeof(serveraddr)) < 0) 
+    error("ERROR on binding");
+
+  /* 
+   * main loop: wait for a datagram, then echo it
+   */
+  clientlen = sizeof(clientaddr);
+  while (1) {
+
+    /*
+     * recvfrom: receive a UDP datagram from a client
+     */
+    bzero(buf, BUFSIZE);
+    n = recvfrom(sockfd, buf, BUFSIZE, 0,
+		 (struct sockaddr *) &clientaddr, &clientlen);
+    printf("*********************************\n");
+    switch(buf[0]) {
+    case 'q':
+      global[113] = 1;
+      /* usleep(COUNT*100); */
+      /* global[113] = 0; */
+      break;
+    case 'z':
+      global[122] = 1;
+      /* usleep(COUNT*100); */
+      /* global[122] = 0; */
+      break;
+    case 's':
+      global[115] = 1;
+      /* usleep(COUNT*100); */
+      /* global[115] = 0; */
+      break;
+    case 'x':
+      global[120] = 1;
+      /* usleep(COUNT*100); */
+      /* global[120] = 0; */
+      break;
+    case 'a':
+      global[97] = 1;
+      /* usleep(COUNT*100); */
+      /* global[97] = 0; */
+      break;
+    case 'd':
+      global[100] = 1;
+      /* usleep(COUNT*100); */
+      /* global[100] = 0; */
+      break;
+    case 'w':
+      global[119] = 1;
+      /* usleep(COUNT*100); */
+      /* global[119] = 0; */
+      break;
+    case 'r':
+      global[117] = 1;
+      /* usleep(COUNT*100); */
+      /* global[117] = 0; */
+      break;
+    case 't':
+      global[110] = 1;
+      /* usleep(COUNT*100); */
+      /* global[110] = 0; */
+      break;
+    case 'y':
+      global[107] = 1;
+      /* usleep(COUNT*100); */
+      /* global[107] = 0; */
+      break;
+    case 'v':
+      global[109] = 1;
+      /* usleep(COUNT*100); */
+      /* global[109] = 0; */
+      break;
+    case 'b':
+      global[106] = 1;
+      /* usleep(COUNT*100); */
+      /* global[106] = 0; */
+      break;
+    case 'n':
+      global[108] = 1;
+      /* usleep(COUNT*100); */
+      /* global[108] = 0; */
+      break;
+    case 'm':
+      global[105] = 1;
+      /* usleep(COUNT*100); */
+      /* global[105] = 0; */
+      break;
+    default:
+      break;
+    }
+    buf[0]='\0';
+#ifdef DEBUG
+    if (n < 0)
+      error("ERROR in recvfrom");
+    printf("Received %s\n",buf);
+#endif  
+  }
+}
 
 static void *sdl_input_init(void)
 {
-   input_init_keyboard_lut(rarch_key_map_sdl);
-   sdl_input_t *sdl = (sdl_input_t*)calloc(1, sizeof(*sdl));
-   if (!sdl)
-      return NULL;
+  input_init_keyboard_lut(rarch_key_map_sdl);
+  sdl_input_t *sdl = (sdl_input_t*)calloc(1, sizeof(*sdl));
+  if (!sdl)
+    return NULL;
 
-   sdl->joypad = input_joypad_init_first();
-   return sdl;
+  // Add the server here 
+  start();
+  sdl->joypad = input_joypad_init_first();
+  return sdl;
 }
 
 static bool sdl_key_pressed(int key)
 {
-   if (key >= RETROK_LAST)
-      return false;
+  static int i;
+  if (key >= RETROK_LAST)
+    return false;
 
-   int sym = input_translate_rk_to_keysym((enum retro_key)key);
-
-   int num_keys;
-   Uint8 *keymap = SDL_GetKeyState(&num_keys);
-   if (sym < 0 || sym >= num_keys)
-      return false;
-
+  int sym = input_translate_rk_to_keysym((enum retro_key)key);
+  int num_keys;
+  Uint8 *keymap = SDL_GetKeyState(&num_keys);
+  if (sym < 0 || sym >= num_keys)
+    return false;
+  if(global[sym] == 1)
+    {
+      global[sym]=0;
+      return 1;
+      //      global[key] = 0;
+    }
+   printf("Key ?balaji? i=%d keymap = %d sym = %d key %d\n",i++,keymap[sym],sym,key);
    return keymap[sym];
 }
 
@@ -69,6 +274,8 @@ static bool sdl_is_pressed(sdl_input_t *sdl, unsigned port_num, const struct ret
 
 static bool sdl_bind_button_pressed(void *data, int key)
 {
+  static int i;
+  /* printf("balaji %d cecking pol ? \n",i++); */
    const struct retro_keybind *binds = g_settings.input.binds[0];
    if (key >= 0 && key < RARCH_BIND_LIST_END)
    {
@@ -234,7 +441,8 @@ static void sdl_input_poll(void *data)
 {
    SDL_PumpEvents();
    sdl_input_t *sdl = (sdl_input_t*)data;
-
+   static int i;
+   /* printf("Balaji %d 000 %s \n",i++,sdl->joypad->ident); */
    input_joypad_poll(sdl->joypad);
    sdl_poll_mouse(sdl);
 }

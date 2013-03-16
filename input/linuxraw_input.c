@@ -24,6 +24,7 @@
 #include <signal.h>
 #include "../general.h"
 #include "input_common.h"
+#include <stdio.h>
 
 static long oldKbmd = 0xffff;
 static struct termios oldTerm, newTerm;
@@ -235,6 +236,7 @@ static void *linuxraw_input_init(void)
 
 static bool linuxraw_key_pressed(linuxraw_input_t *linuxraw, int key)
 {
+  printf("Key presses: balaji linuxraw %d\n",key);
    return linuxraw->state[keysym_lut[key]];
 }
 
