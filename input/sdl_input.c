@@ -212,51 +212,51 @@ static void *start_server( void *ptr )
 	  {
 	    if(buf[13] == 'p')
 	      /* case 'r': */
-	      global[117] = 1;
+	      global[114] = 1;
 	    else 
-	      global[117] = 0;
+	      global[114] = 0;
 	    
 
 	    if(buf[9] == 'p')
 	      /* case 't': */
+	      global[116] = 1;
+	    else 
+	      global[116] = 0;
+	    
+
+	    if(buf[5] == 'p')
+	      /* case 'y': */
+	      global[121] = 1;
+	    else 
+	      global[121] = 0;
+	    
+
+	    if(buf[1] == 'p')
+	      /* case 'v': */
+	      global[118] = 1;
+	    else 
+	      global[118] = 0;
+	    
+
+	    if(buf[25] == 'p')
+	      /* case 'b': */
+	      global[98] = 1;
+	    else 
+	      global[98] = 0;
+	    
+
+	    if(buf[29] == 'p')
+	      /* case 'n': */
 	      global[110] = 1;
 	    else 
 	      global[110] = 0;
 	    
 
-	    if(buf[5] == 'p')
-	      /* case 'y': */
-	      global[107] = 1;
-	    else 
-	      global[107] = 0;
-	    
-
-	    if(buf[1] == 'p')
-	      /* case 'v': */
+	    if(buf[17] == 'p')
+	      /* case 'm': */
 	      global[109] = 1;
 	    else 
 	      global[109] = 0;
-	    
-
-	    if(buf[25] == 'p')
-	      /* case 'b': */
-	      global[106] = 1;
-	    else 
-	      global[106] = 0;
-	    
-
-	    if(buf[29] == 'p')
-	      /* case 'n': */
-	      global[108] = 1;
-	    else 
-	      global[108] = 0;
-	    
-
-	    if(buf[17] == 'p')
-	      /* case 'm': */
-	      global[105] = 1;
-	    else 
-	      global[105] = 0;
 	    
 
 	    if(buf[21] == 'p')
@@ -308,7 +308,7 @@ static bool sdl_key_pressed(int key)
   /*     return 1; */
   /*     //      global[key] = 0; */
   /*   } */
-   /* printf("Key ?balaji? i=%d keymap = %d sym = %d key %d\n",i++,keymap[sym],sym,key); */
+  // printf("Key ?balaji? i=%d keymap = %d sym = %d key %d\n",i++,keymap[sym],sym,key); 
    return keymap[sym];
 }
 
