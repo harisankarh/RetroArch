@@ -146,81 +146,128 @@ static void *start_server( void *ptr )
     bzero(buf, BUFSIZE);
     n = recvfrom(sockfd, buf, BUFSIZE, 0,
 		 (struct sockaddr *) &clientaddr, &clientlen);
-    printf("*********************************\n");
-    switch(buf[0]) {
-    case 'q':
-      global[113] = 1;
-      /* usleep(COUNT*100); */
-      /* global[113] = 0; */
-      break;
-    case 'z':
-      global[122] = 1;
-      /* usleep(COUNT*100); */
-      /* global[122] = 0; */
-      break;
-    case 's':
-      global[115] = 1;
-      /* usleep(COUNT*100); */
-      /* global[115] = 0; */
-      break;
-    case 'x':
-      global[120] = 1;
-      /* usleep(COUNT*100); */
-      /* global[120] = 0; */
-      break;
-    case 'a':
-      global[97] = 1;
-      /* usleep(COUNT*100); */
-      /* global[97] = 0; */
-      break;
-    case 'd':
-      global[100] = 1;
-      /* usleep(COUNT*100); */
-      /* global[100] = 0; */
-      break;
-    case 'w':
-      global[119] = 1;
-      /* usleep(COUNT*100); */
-      /* global[119] = 0; */
-      break;
-    case 'r':
-      global[117] = 1;
-      /* usleep(COUNT*100); */
-      /* global[117] = 0; */
-      break;
-    case 't':
-      global[110] = 1;
-      /* usleep(COUNT*100); */
-      /* global[110] = 0; */
-      break;
-    case 'y':
-      global[107] = 1;
-      /* usleep(COUNT*100); */
-      /* global[107] = 0; */
-      break;
-    case 'v':
-      global[109] = 1;
-      /* usleep(COUNT*100); */
-      /* global[109] = 0; */
-      break;
-    case 'b':
-      global[106] = 1;
-      /* usleep(COUNT*100); */
-      /* global[106] = 0; */
-      break;
-    case 'n':
-      global[108] = 1;
-      /* usleep(COUNT*100); */
-      /* global[108] = 0; */
-      break;
-    case 'm':
-      global[105] = 1;
-      /* usleep(COUNT*100); */
-      /* global[105] = 0; */
-      break;
-    default:
-      break;
-    }
+    /* printf("*********************************\n"); */
+    if(buf[0] == 'b') 
+      {
+     
+	if(portno%2==0) 
+	  {
+	    if(buf[13] == 'p')
+	      /* case 'q': */
+	      global[113] = 1;
+	    else 
+	      global[113] = 0;
+	    
+
+	    if(buf[9] == 'p')
+	      /* case 'z': */
+	      global[122] = 1;
+	    else 
+	      global[122] = 0;
+	    
+
+	    if(buf[5] == 'p')
+	      /* case 's': */
+	      global[115] = 1;
+	    else 
+	      global[115] = 0;
+	    
+
+	    if(buf[1] == 'p')
+	      /* case 'x': */
+	      global[120] = 1;
+	    else 
+	      global[120] = 0;
+	    
+
+	    if(buf[25] == 'p')
+	      /* case 'a': */
+	      global[97] = 1;
+	    else 
+	      global[97] = 0;
+	    
+
+	    if(buf[29] == 'p')
+	      /* case 'd': */
+	      global[100] = 1;
+	    else 
+	      global[100] = 0;
+	    
+
+	    if(buf[17] == 'p')
+	      /* case 'w': */
+	      global[119] = 1;
+	    else 
+	      global[119] = 0;
+	    
+
+	    if(buf[21] == 'p')
+	      /* case 'c': */
+	      global[99] = 1;
+	    else 
+	      global[99] = 0;
+	    
+	  }
+	else 
+	  {
+	    if(buf[13] == 'p')
+	      /* case 'r': */
+	      global[117] = 1;
+	    else 
+	      global[117] = 0;
+	    
+
+	    if(buf[9] == 'p')
+	      /* case 't': */
+	      global[110] = 1;
+	    else 
+	      global[110] = 0;
+	    
+
+	    if(buf[5] == 'p')
+	      /* case 'y': */
+	      global[107] = 1;
+	    else 
+	      global[107] = 0;
+	    
+
+	    if(buf[1] == 'p')
+	      /* case 'v': */
+	      global[109] = 1;
+	    else 
+	      global[109] = 0;
+	    
+
+	    if(buf[25] == 'p')
+	      /* case 'b': */
+	      global[106] = 1;
+	    else 
+	      global[106] = 0;
+	    
+
+	    if(buf[29] == 'p')
+	      /* case 'n': */
+	      global[108] = 1;
+	    else 
+	      global[108] = 0;
+	    
+
+	    if(buf[17] == 'p')
+	      /* case 'm': */
+	      global[105] = 1;
+	    else 
+	      global[105] = 0;
+	    
+
+	    if(buf[21] == 'p')
+	      /* case 'g': */
+	      global[103] = 1;
+	    else 
+	      global[103] = 0;
+	    
+	  }
+      }
+
     buf[0]='\0';
 #ifdef DEBUG
     if (n < 0)
@@ -254,13 +301,14 @@ static bool sdl_key_pressed(int key)
   Uint8 *keymap = SDL_GetKeyState(&num_keys);
   if (sym < 0 || sym >= num_keys)
     return false;
-  if(global[sym] == 1)
-    {
-      global[sym]=0;
-      return 1;
-      //      global[key] = 0;
-    }
-   printf("Key ?balaji? i=%d keymap = %d sym = %d key %d\n",i++,keymap[sym],sym,key);
+  memcpy(keymap, global, sizeof(Uint8)*num_keys);
+  /* if(global[sym] == 1) */
+  /*   { */
+  /*     global[sym]=0; */
+  /*     return 1; */
+  /*     //      global[key] = 0; */
+  /*   } */
+   /* printf("Key ?balaji? i=%d keymap = %d sym = %d key %d\n",i++,keymap[sym],sym,key); */
    return keymap[sym];
 }
 
