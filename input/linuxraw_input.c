@@ -236,7 +236,6 @@ static void *linuxraw_input_init(void)
 
 static bool linuxraw_key_pressed(linuxraw_input_t *linuxraw, int key)
 {
-  printf("Key presses: balaji linuxraw %d\n",key);
    return linuxraw->state[keysym_lut[key]];
 }
 
